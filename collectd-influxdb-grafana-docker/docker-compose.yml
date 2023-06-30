@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+  collectd:
+    image: fr3nd/collectd
+    restart: always
+    privileged: true
+    network_mode: host
+    volumes:
+      - /proc:/mnt/proc:ro
+      - ./collectd.conf:/etc/collectd/collectd.conf
+      - ./perl/5.34.0:/etc/perl:ro
+  influxdb:
+    image: influxdb:1.0
+    restart: always
+    ports:
+      - "8081:8083"
+      - "8086:8086"
+      - "25826:25826/udp"
+    volumes:
+      - /var/lib/influxdb
+      - ./influxdb.conf:/etc/influxdb/influxdb.conf
+      - ./types.db:/usr/share/collectd/types.db:ro
+  grafana:
+    image: grafana/grafana:3.1.1
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - /var/lib/grafana

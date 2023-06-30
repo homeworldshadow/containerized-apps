@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+  utorrent:
+    image: ekho/utorrent:v2.1.0
+    container_name: utorrent
+    volumes:
+      - ./utorrent:/utorrent/settings
+      - /media/storage/torrents:/data
+    environment:
+#      UID: 1000
+#      GID: 1000
+      webui: ut
+    ports:
+      - 9091:8080
+      - 6881:6881
+      - 6881:6881/udp
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

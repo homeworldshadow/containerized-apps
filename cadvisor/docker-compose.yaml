@@ -1,0 +1,23 @@
+version: "3.6"
+
+services:
+  cadvisor: 
+    image: gcr.io/cadvisor/cadvisor:v0.45.0
+    container_name: cadvisor 
+    restart: always
+    privileged: "true"
+    ports:
+      - 8085:8080
+    command:
+      - '-housekeeping_interval=10s'
+      - '-docker_only=true'
+    volumes: 
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/snap/docker/:/var/lib/docker:ro
+    devices:
+      - /dev/kmsg:/dev/kmsg
+

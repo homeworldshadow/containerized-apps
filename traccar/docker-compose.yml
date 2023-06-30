@@ -1,0 +1,43 @@
+version: "3"
+
+
+services:
+
+  mariadb:
+    image: mariadb:10.5
+    container_name: traccar_mariadb
+    restart: always
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=traccar
+      - MYSQL_USER=traccar
+      - MYSQL_PASSWORD=traccar
+      - MYSQL_DATABASE=traccar
+    command: ["--max-allowed-packet=128M", "--innodb-log-file-size=64M"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-u", "root", "--password=traccar"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - ./mysql:/var/lib/mysql
+
+  traccar:
+    image: traccar/traccar:5.6
+    container_name: traccar
+    restart: always
+    depends_on:
+      - mariadb
+    ports:
+      - 8082:8082
+      - 5000-5150:5000-5150
+      - 5000-5150:5000-5150/udp
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://traccar:8082"]
+#      interval: 10s
+#      timeout: 30s
+#      retries: 5
+    volumes:
+      - ./logs:/opt/traccar/logs:rw
+      - ./conf/traccar.xml:/opt/traccar/conf/traccar.xml:ro

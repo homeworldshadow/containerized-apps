@@ -1,0 +1,11 @@
+version: "3.6"
+
+services:
+  acme_cert:
+    container_name: acme_sh
+    image: neilpang/acme.sh:3.0.4
+    network_mode: host
+    restart: always
+    command: daemon
+    volumes:
+      - /home/user/acme:/acme.sh
